@@ -1,0 +1,1484 @@
+{
+  "info": {
+    "_postman_id": "ef494a02-2072-4705-86e2-4d77940700a8",
+    "name": "notesApi",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "30818495",
+    "_collection_link": "https://martian-satellite-852575.postman.co/workspace/Mock-Workspace~7bf20a9f-ceae-4d7e-8f7e-0f6f122f36d1/collection/30818495-ef494a02-2072-4705-86e2-4d77940700a8?action=share&source=collection_link&creator=30818495"
+  },
+  "item": [
+    {
+      "name": "publicAPITesting",
+      "item": [
+        {
+          "name": "healthCheck",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/notes/api/health-check",
+              "host": ["{{url}}"],
+              "path": ["notes", "api", "health-check"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "userRegister",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonBody = pm.response.json();",
+                  "let value = jsonBody.data.id;",
+                  "let userId = pm.collectionVariables.set(\"userId\", value);",
+                  "",
+                  "",
+                  "pm.test(\"header content-type check\", function(){",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json; charset=utf-8\")",
+                  "});",
+                  "",
+                  "pm.test(\"randomFirstNameCheck\", function () {",
+                  "    pm.expect(jsonBody.data.name).to.eql(pm.collectionVariables.get(\"randomName\"))",
+                  "});",
+                  "",
+                  "pm.test(\"successCheck\", function () {",
+                  "    pm.expect(jsonBody.success).to.eql(Boolean(pm.collectionVariables.get(\"success\")))",
+                  "});",
+                  "",
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"userIdCheck\", function () {",
+                  "    pm.expect(jsonBody.data.id).to.eql(pm.collectionVariables.get(\"userId\"))",
+                  "});",
+                  "",
+                  "pm.test(\"randomEmailCheck\", function () {",
+                  "    pm.expect(jsonBody.data.email).to.eql(pm.collectionVariables.get(\"randomEmail\"))",
+                  "});",
+                  "",
+                  "",
+                  "pm.test(\"messageCheck\", function () {",
+                  "    pm.expect(jsonBody.message).to.eql(pm.collectionVariables.get(\"registerMessage\"))",
+                  "});",
+                  "",
+                  "pm.test(\"dataTypeCheck\", function () {",
+                  "    pm.expect(jsonBody).to.be.an(\"object\")",
+                  "})",
+                  "",
+                  "",
+                  "",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "function generateRandomString(length) {",
+                  "    const characters = 'abcdefghijklmnopqrstuvwxyz';",
+                  "    let randomString = '';",
+                  "    for (let i = 0; i < length; i++) {",
+                  "        randomString += characters.charAt(Math.floor(Math.random() * characters.length));",
+                  "    }",
+                  "    return randomString;",
+                  "}",
+                  "",
+                  "const randomName = generateRandomString(6);",
+                  "const randomEmail = `user_${randomName}@example.com`;",
+                  "const randomPassword = generateRandomString(12);",
+                  "",
+                  "pm.collectionVariables.set('randomName', randomName);",
+                  "pm.collectionVariables.set('randomEmail', randomEmail);",
+                  "pm.collectionVariables.set('randomPassword', randomPassword);",
+                  "",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "name",
+                  "value": "{{randomName}}",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "{{randomEmail}}",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "{{randomPassword}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/notes/api/users/register",
+              "host": ["{{url}}"],
+              "path": ["notes", "api", "users", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "userLogin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonBody = pm.response.json();",
+                  "let value = jsonBody.data.token;",
+                  "let token = pm.collectionVariables.set(\"token\", value);",
+                  "",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"successCheck\", function () {",
+                  "    pm.expect(jsonBody.success).to.eql(Boolean(pm.collectionVariables.get(\"success\")))",
+                  "});",
+                  "",
+                  "pm.test(\"messageCheck\", function () {",
+                  "    pm.expect(jsonBody.message).to.eql(pm.collectionVariables.get(\"loginMessage\"))",
+                  "});",
+                  "",
+                  "pm.test(\"userIdCheck\", function () {",
+                  "    pm.expect(jsonBody.data.id).to.eql(pm.collectionVariables.get(\"userId\"))",
+                  "});",
+                  "",
+                  "pm.test(\"randomEmalCheckCheck\", function () {",
+                  "    pm.expect(jsonBody.data.email).to.eql(pm.collectionVariables.get(\"randomEmail\"))",
+                  "});",
+                  "",
+                  "pm.test(\"randomFirstNameCheck\", function () {",
+                  "    pm.expect(jsonBody.data.name).to.eql(pm.collectionVariables.get(\"randomName\"))",
+                  "});",
+                  "",
+                  "pm.test(\"dataTypeCheck\", function () {",
+                  "    pm.expect(jsonBody).to.be.an(\"object\")",
+                  "})",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "{{randomEmail}}",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "{{randomPassword}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/notes/api/users/login",
+              "host": ["{{url}}"],
+              "path": ["notes", "api", "users", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "createNote",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonBody = pm.response.json();",
+                  "let value = jsonBody.data.id;",
+                  "let id = pm.collectionVariables.set(\"id\", value);",
+                  "",
+                  "let created_at = jsonBody.data.created_at;",
+                  "let createdDate = pm.collectionVariables.set(\"createdDate\", created_at);",
+                  "",
+                  "let updated_at = jsonBody.data.updated_at;",
+                  "let updatedDate = pm.collectionVariables.set(\"updatedDate\", updated_at);",
+                  "",
+                  "let completion = jsonBody.data.completed;",
+                  "let noteCompletion = pm.collectionVariables.set(\"noteCompletion\", completion)",
+                  "",
+                  "pm.test(\"successCheck\", function () {",
+                  "    pm.expect(jsonBody.success).to.eql(Boolean(pm.collectionVariables.get(\"success\")))",
+                  "});",
+                  "",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"messageCheck\", function () {",
+                  "    pm.expect(jsonBody.message).to.eql(pm.collectionVariables.get(\"noteMessage\"))",
+                  "});",
+                  "",
+                  "pm.test(\"userIdCheck\", function () {",
+                  "    pm.expect(jsonBody.data.id).to.eql(pm.collectionVariables.get(\"id\"))",
+                  "});",
+                  "",
+                  "pm.test(\"titleCheck\", function () {",
+                  "    pm.expect(jsonBody.data.title).to.eql(pm.collectionVariables.get(\"title\"))",
+                  "});",
+                  "",
+                  "pm.test(\"descriptionCheck\", function () {",
+                  "    pm.expect(jsonBody.data.description).to.eql(pm.collectionVariables.get(\"description\"))",
+                  "});",
+                  "",
+                  "pm.test(\"categoryCheck\", function () {",
+                  "    pm.expect(jsonBody.data.category).to.eql(pm.collectionVariables.get(\"category\"))",
+                  "});",
+                  "",
+                  "pm.test(\"completionCheck\", function () {",
+                  "    pm.expect(jsonBody.data.completed).to.eql(pm.collectionVariables.get(\"noteCompletion\"))",
+                  "});",
+                  "",
+                  "pm.test(\"createdDateCheck\", function () {",
+                  "    pm.expect(jsonBody.data.created_at).to.eql(pm.collectionVariables.get(\"createdDate\"))",
+                  "});",
+                  "",
+                  "pm.test(\"updatedDateCheck\", function () {",
+                  "    pm.expect(jsonBody.data.updated_at).to.eql(pm.collectionVariables.get(\"updatedDate\"))",
+                  "});",
+                  "",
+                  "pm.test(\"userIdCheck\", function () {",
+                  "    pm.expect(jsonBody.data.user_id).to.eql(pm.collectionVariables.get(\"userId\"))",
+                  "});",
+                  "",
+                  "pm.test(\"dataTypeCheck\", function () {",
+                  "    pm.expect(jsonBody).to.be.an(\"object\")",
+                  "})",
+                  "",
+                  "",
+                  "",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const authToken = pm.collectionVariables.get('token');",
+                  "",
+                  "pm.request.headers.add({",
+                  "    key: 'x-auth-token',",
+                  "    value: authToken",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "title",
+                  "value": "{{title}}",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "{{description}}",
+                  "type": "text"
+                },
+                {
+                  "key": "category",
+                  "value": "{{category}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/notes/api/notes",
+              "host": ["{{url}}"],
+              "path": ["notes", "api", "notes"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getAllNotes",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const authToken = pm.collectionVariables.get('token');",
+                  "",
+                  "pm.request.headers.add({",
+                  "    key: 'x-auth-token',",
+                  "    value: authToken",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonBody = pm.response.json();",
+                  "",
+                  "pm.test(\"successCheck\", function () {",
+                  "    pm.expect(jsonBody.success).to.eql(Boolean(pm.collectionVariables.get(\"success\")))",
+                  "});",
+                  "",
+                  "pm.test(\"messageCheck\", function () {",
+                  "    pm.expect(jsonBody.message).to.eql(pm.collectionVariables.get(\"getAllNotesMessage\"))",
+                  "});",
+                  "",
+                  "pm.test(\"noteIdCheck\", function () {",
+                  "    pm.expect(jsonBody.data[0].id).to.eql(pm.collectionVariables.get(\"id\"))",
+                  "});",
+                  "",
+                  "pm.test(\"titleCheck\", function () {",
+                  "    pm.expect(jsonBody.data[0].title).to.eql(pm.collectionVariables.get(\"title\"))",
+                  "});",
+                  "",
+                  "pm.test(\"descriptionCheck\", function () {",
+                  "    pm.expect(jsonBody.data[0].description).to.eql(pm.collectionVariables.get(\"description\"))",
+                  "});",
+                  "",
+                  "pm.test(\"categoryCheck\", function () {",
+                  "    pm.expect(jsonBody.data[0].category).to.eql(pm.collectionVariables.get(\"category\"))",
+                  "});",
+                  "",
+                  "pm.test(\"completionCheck\", function () {",
+                  "    pm.expect(jsonBody.data[0].completed).to.eql(pm.collectionVariables.get(\"noteCompletion\"))",
+                  "});",
+                  "",
+                  "pm.test(\"createdDateCheck\", function () {",
+                  "    pm.expect(jsonBody.data[0].created_at).to.eql(pm.collectionVariables.get(\"createdDate\"))",
+                  "});",
+                  "",
+                  "pm.test(\"updatedDateCheck\", function () {",
+                  "    pm.expect(jsonBody.data[0].updated_at).to.eql(pm.collectionVariables.get(\"updatedDate\"))",
+                  "});",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/notes/api/notes",
+              "host": ["{{url}}"],
+              "path": ["notes", "api", "notes"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "getNoteById",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const authToken = pm.collectionVariables.get('token');",
+                  "",
+                  "pm.request.headers.add({",
+                  "    key: 'x-auth-token',",
+                  "    value: authToken",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonBody = pm.response.json();",
+                  "",
+                  "pm.test(\"messageCheck\", function () {",
+                  "    pm.expect(jsonBody.message).to.eql(pm.collectionVariables.get(\"getNoteByIdMessage\"))",
+                  "});",
+                  "",
+                  "pm.test(\"noteIdCheck\", function () {",
+                  "    pm.expect(jsonBody.data.id).to.eql(pm.collectionVariables.get(\"id\"))",
+                  "});",
+                  "",
+                  "pm.test(\"titleCheck\", function () {",
+                  "    pm.expect(jsonBody.data.title).to.eql(pm.collectionVariables.get(\"title\"))",
+                  "});",
+                  "",
+                  "pm.test(\"descriptionCheck\", function () {",
+                  "    pm.expect(jsonBody.data.description).to.eql(pm.collectionVariables.get(\"description\"))",
+                  "});",
+                  "",
+                  "pm.test(\"categoryCheck\", function () {",
+                  "    pm.expect(jsonBody.data.category).to.eql(pm.collectionVariables.get(\"category\"))",
+                  "});",
+                  "",
+                  "pm.test(\"completionCheck\", function () {",
+                  "    pm.expect(jsonBody.data.completed).to.eql(pm.collectionVariables.get(\"noteCompletion\"))",
+                  "});",
+                  "",
+                  "pm.test(\"createdDateCheck\", function () {",
+                  "    pm.expect(jsonBody.data.created_at).to.eql(pm.collectionVariables.get(\"createdDate\"))",
+                  "});",
+                  "",
+                  "pm.test(\"updatedDateCheck\", function () {",
+                  "    pm.expect(jsonBody.data.updated_at).to.eql(pm.collectionVariables.get(\"updatedDate\"))",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{url}}/notes/api/notes/{{id}}",
+              "host": ["{{url}}"],
+              "path": ["notes", "api", "notes", "{{id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "updateNote",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const authToken = pm.collectionVariables.get('token');",
+                  "",
+                  "pm.request.headers.add({",
+                  "    key: 'x-auth-token',",
+                  "    value: authToken",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonBody = pm.response.json();",
+                  "let value = jsonBody.data.updated_at;",
+                  "let updatedNoteDate = pm.collectionVariables.set(\"updatedNoteDate\", value)",
+                  "",
+                  "pm.test(\"successCheck\", function () {",
+                  "    pm.expect(jsonBody.success).to.eql(Boolean(pm.collectionVariables.get(\"success\")))",
+                  "});",
+                  "",
+                  "pm.test(\"messageCheck\", function () {",
+                  "    pm.expect(jsonBody.message).to.eql(pm.collectionVariables.get(\"updatedNoteMessage\"))",
+                  "});",
+                  "",
+                  "pm.test(\"noteIdCheck\", function () {",
+                  "    pm.expect(jsonBody.data.id).to.eql(pm.collectionVariables.get(\"id\"))",
+                  "});",
+                  "",
+                  "pm.test(\"titleCheck\", function () {",
+                  "    pm.expect(jsonBody.data.title).to.eql(pm.collectionVariables.get(\"title\"))",
+                  "});",
+                  "",
+                  "pm.test(\"descriptionCheck\", function () {",
+                  "    pm.expect(jsonBody.data.description).to.eql(pm.collectionVariables.get(\"description\"))",
+                  "});",
+                  "",
+                  "pm.test(\"categoryCheck\", function () {",
+                  "    pm.expect(jsonBody.data.category).to.eql(pm.collectionVariables.get(\"category\"))",
+                  "});",
+                  "",
+                  "pm.test(\"completionCheck\", function () {",
+                  "    pm.expect(jsonBody.data.completed).to.eql(Boolean(pm.collectionVariables.get(\"completed\")))",
+                  "});",
+                  "",
+                  "pm.test(\"createdDateCheck\", function () {",
+                  "    pm.expect(jsonBody.data.created_at).to.eql(pm.collectionVariables.get(\"createdDate\"))",
+                  "});",
+                  "",
+                  "pm.test(\"updatedDateCheck\", function () {",
+                  "    pm.expect(jsonBody.data.updated_at).to.eql(pm.collectionVariables.get(\"updatedNoteDate\"))",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "title",
+                  "value": "{{title}}",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "{{description}}",
+                  "type": "text"
+                },
+                {
+                  "key": "completed",
+                  "value": "{{completed}}",
+                  "type": "text"
+                },
+                {
+                  "key": "category",
+                  "value": "{{category}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/notes/api/notes/{{id}}",
+              "host": ["{{url}}"],
+              "path": ["notes", "api", "notes", "{{id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "noteStatusUpdate",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const authToken = pm.collectionVariables.get('token');",
+                  "",
+                  "pm.request.headers.add({",
+                  "    key: 'x-auth-token',",
+                  "    value: authToken",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonBody = pm.response.json();",
+                  "",
+                  "pm.test(\"successCheck\", function () {",
+                  "    pm.expect(jsonBody.success).to.eql(Boolean(pm.collectionVariables.get(\"success\")))",
+                  "});",
+                  "",
+                  "pm.test(\"messageCheck\", function () {",
+                  "    pm.expect(jsonBody.message).to.eql(pm.collectionVariables.get(\"noteStatusUpdateMessage\"))",
+                  "});",
+                  "",
+                  "pm.test(\"noteIdCheck\", function () {",
+                  "    pm.expect(jsonBody.data.id).to.eql(pm.collectionVariables.get(\"id\"))",
+                  "});",
+                  "",
+                  "pm.test(\"titleCheck\", function () {",
+                  "    pm.expect(jsonBody.data.title).to.eql(pm.collectionVariables.get(\"title\"))",
+                  "});",
+                  "",
+                  "pm.test(\"descriptionCheck\", function () {",
+                  "    pm.expect(jsonBody.data.description).to.eql(pm.collectionVariables.get(\"description\"))",
+                  "});",
+                  "",
+                  "pm.test(\"categoryCheck\", function () {",
+                  "    pm.expect(jsonBody.data.category).to.eql(pm.collectionVariables.get(\"category\"))",
+                  "});",
+                  "",
+                  "pm.test(\"completionCheck\", function () {",
+                  "    pm.expect(jsonBody.data.completed).to.eql(Boolean(pm.collectionVariables.get(\"completed\")))",
+                  "});",
+                  "",
+                  "pm.test(\"createdDateCheck\", function () {",
+                  "    pm.expect(jsonBody.data.created_at).to.eql(pm.collectionVariables.get(\"createdDate\"))",
+                  "});",
+                  "",
+                  "pm.test(\"updatedDateCheck\", function () {",
+                  "    pm.expect(jsonBody.data.updated_at).to.eql(pm.collectionVariables.get(\"updatedNoteDate\"))",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "completed",
+                  "value": "{{completed}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/notes/api/notes/{{id}}",
+              "host": ["{{url}}"],
+              "path": ["notes", "api", "notes", "{{id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deleteNote",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const authToken = pm.collectionVariables.get('token');",
+                  "",
+                  "pm.request.headers.add({",
+                  "    key: 'x-auth-token',",
+                  "    value: authToken",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonBody = pm.response.json();",
+                  "",
+                  "pm.test(\"successCheck\", function () {",
+                  "    pm.expect(jsonBody.success).to.eql(Boolean(pm.collectionVariables.get(\"success\")))",
+                  "});",
+                  "",
+                  "pm.test(\"messageCheck\", function () {",
+                  "    pm.expect(jsonBody.message).to.eql(pm.collectionVariables.get(\"deletedNoteMessage\"))",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/notes/api/notes/{{id}}",
+              "host": ["{{url}}"],
+              "path": ["notes", "api", "notes", "{{id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "userProfile",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const authToken = pm.collectionVariables.get('token');",
+                  "",
+                  "pm.request.headers.add({",
+                  "    key: 'x-auth-token',",
+                  "    value: authToken",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonBody = pm.response.json();",
+                  "",
+                  "pm.test(\"successCheck\", function () {",
+                  "    pm.expect(jsonBody.success).to.eql(Boolean(pm.collectionVariables.get(\"success\")))",
+                  "});",
+                  "",
+                  "pm.test(\"messageCheck\", function () {",
+                  "    pm.expect(jsonBody.message).to.eql(pm.collectionVariables.get(\"userProfileMessage\"))",
+                  "});",
+                  "",
+                  "pm.test(\"userIdCheck\", function () {",
+                  "    pm.expect(jsonBody.data.id).to.eql(pm.collectionVariables.get(\"userId\"))",
+                  "});",
+                  "",
+                  "pm.test(\"userNameCheck\", function () {",
+                  "    pm.expect(jsonBody.data.name).to.eql(pm.collectionVariables.get(\"randomName\"))",
+                  "});",
+                  "",
+                  "pm.test(\"userEmailCheck\", function () {",
+                  "    pm.expect(jsonBody.data.email).to.eql(pm.collectionVariables.get(\"randomEmail\"))",
+                  "});",
+                  "",
+                  "",
+                  "",
+                  "",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/notes/api/users/profile",
+              "host": ["{{url}}"],
+              "path": ["notes", "api", "users", "profile"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "userProfileUpdate",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const authToken = pm.collectionVariables.get('token');",
+                  "",
+                  "pm.request.headers.add({",
+                  "    key: 'x-auth-token',",
+                  "    value: authToken",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonBody = pm.response.json();",
+                  "",
+                  "pm.test(\"successCheck\", function () {",
+                  "    pm.expect(jsonBody.success).to.eql(Boolean(pm.collectionVariables.get(\"success\")))",
+                  "});",
+                  "",
+                  "pm.test(\"messageCheck\", function () {",
+                  "    pm.expect(jsonBody.message).to.eql(pm.collectionVariables.get(\"updatedProfileMessage\"))",
+                  "});",
+                  "",
+                  "pm.test(\"userIdCheck\", function () {",
+                  "    pm.expect(jsonBody.data.id).to.eql(pm.collectionVariables.get(\"userId\"))",
+                  "});",
+                  "",
+                  "pm.test(\"userUpdatedNameCheck\", function () {",
+                  "    pm.expect(jsonBody.data.name).to.eql(pm.collectionVariables.get(\"updateName\"))",
+                  "});",
+                  "",
+                  "pm.test(\"userEmailCheck\", function () {",
+                  "    pm.expect(jsonBody.data.email).to.eql(pm.collectionVariables.get(\"randomEmail\"))",
+                  "});",
+                  "",
+                  "pm.test(\"userPhoneCheck\", function () {",
+                  "    pm.expect(jsonBody.data.phone).to.eql(pm.collectionVariables.get(\"updatePhone\"))",
+                  "});",
+                  "",
+                  "pm.test(\"userCompanyCheck\", function () {",
+                  "    pm.expect(jsonBody.data.company).to.eql(pm.collectionVariables.get(\"updateComapny\"))",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "name",
+                  "value": "{{updateName}}",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "{{updatePhone}}",
+                  "type": "text"
+                },
+                {
+                  "key": "company",
+                  "value": "{{updateComapny}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/notes/api/users/profile",
+              "host": ["{{url}}"],
+              "path": ["notes", "api", "users", "profile"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "forgotPassword",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const authToken = pm.collectionVariables.get('token');",
+                  "",
+                  "pm.request.headers.add({",
+                  "    key: 'x-auth-token',",
+                  "    value: authToken",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonBody = pm.response.json();",
+                  "",
+                  "pm.test(\"successCheck\", function () {",
+                  "    pm.expect(jsonBody.success).to.eql(Boolean(pm.collectionVariables.get(\"success\")))",
+                  "});",
+                  "",
+                  "pm.test(\"successCheck\", function () {",
+                  "    pm.expect(jsonBody.message).to.eql(pm.collectionVariables.get(\"forgotPasswordMessage\"))",
+                  "});",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "{{randomEmail}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/notes/api/users/forgot-password",
+              "host": ["{{url}}"],
+              "path": ["notes", "api", "users", "forgot-password"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "changePassword",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const authToken = pm.collectionVariables.get('token');",
+                  "",
+                  "pm.request.headers.add({",
+                  "    key: 'x-auth-token',",
+                  "    value: authToken",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonBody = pm.response.json();",
+                  "",
+                  "pm.test(\"successCheck\", function () {",
+                  "    pm.expect(jsonBody.success).to.eql(Boolean(pm.collectionVariables.get(\"success\")))",
+                  "});",
+                  "",
+                  "pm.test(\"successCheck\", function () {",
+                  "    pm.expect(jsonBody.message).to.eql(pm.collectionVariables.get(\"changedPasswordMessage\"))",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "currentPassword",
+                  "value": "{{randomPassword}}",
+                  "type": "text"
+                },
+                {
+                  "key": "newPassword",
+                  "value": "{{changePassword}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/notes/api/users/change-password",
+              "host": ["{{url}}"],
+              "path": ["notes", "api", "users", "change-password"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "userLogout",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const authToken = pm.collectionVariables.get('token');",
+                  "",
+                  "pm.request.headers.add({",
+                  "    key: 'x-auth-token',",
+                  "    value: authToken",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonBody = pm.response.json();",
+                  "",
+                  "pm.test(\"successCheck\", function () {",
+                  "    pm.expect(jsonBody.success).to.eql(Boolean(pm.collectionVariables.get(\"success\")))",
+                  "});",
+                  "",
+                  "pm.test(\"successCheck\", function () {",
+                  "    pm.expect(jsonBody.message).to.eql(pm.collectionVariables.get(\"logoutMessage\"))",
+                  "});",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://practice.expandtesting.com/notes/api/users/logout",
+              "protocol": "https",
+              "host": ["practice", "expandtesting", "com"],
+              "path": ["notes", "api", "users", "logout"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "userRegister2",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "function generateRandomString(length) {",
+                  "    const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';",
+                  "    let randomString = '';",
+                  "    for (let i = 0; i < length; i++) {",
+                  "        randomString += characters.charAt(Math.floor(Math.random() * characters.length));",
+                  "    }",
+                  "    return randomString;",
+                  "}",
+                  "",
+                  "const randomName = generateRandomString(6);",
+                  "const randomEmail = `user_${randomName}@example.com`;",
+                  "const randomPassword = generateRandomString(12);",
+                  "",
+                  "pm.collectionVariables.set('randomName', randomName);",
+                  "pm.collectionVariables.set('randomEmail', randomEmail);",
+                  "pm.collectionVariables.set('randomPassword', randomPassword);",
+                  "",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "name",
+                  "value": "{{randomName}}",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "{{randomEmail}}",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "{{randomPassword}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/notes/api/users/register",
+              "host": ["{{url}}"],
+              "path": ["notes", "api", "users", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "userLogin-2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonBody = pm.response.json();",
+                  "let value = jsonBody.data.token;",
+                  "let token = pm.collectionVariables.set(\"token\", value);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "email",
+                  "value": "{{randomEmail}}",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "{{randomPassword}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/notes/api/users/login",
+              "host": ["{{url}}"],
+              "path": ["notes", "api", "users", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "deleteAccount",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const authToken = pm.collectionVariables.get('token');",
+                  "",
+                  "pm.request.headers.add({",
+                  "    key: 'x-auth-token',",
+                  "    value: authToken",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonBody = pm.response.json();",
+                  "",
+                  "pm.test(\"successCheck\", function () {",
+                  "    pm.expect(jsonBody.success).to.eql(Boolean(pm.collectionVariables.get(\"success\")))",
+                  "});",
+                  "",
+                  "pm.test(\"successCheck\", function () {",
+                  "    pm.expect(jsonBody.message).to.eql(pm.collectionVariables.get(\"deletedAccountMessage\"))",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/notes/api/users/delete-account",
+              "host": ["{{url}}"],
+              "path": ["notes", "api", "users", "delete-account"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "randomName",
+      "value": ""
+    },
+    {
+      "key": "randomEmail",
+      "value": ""
+    },
+    {
+      "key": "randomPassword",
+      "value": ""
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "title",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "description",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "category",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "id",
+      "value": ""
+    },
+    {
+      "key": "completed",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "updateName",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "updatePhone",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "updateComapny",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "changePassword",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "success",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": ""
+    },
+    {
+      "key": "registerMessage",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "loginMessage",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "noteMessage",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "createdDate",
+      "value": ""
+    },
+    {
+      "key": "updatedDate",
+      "value": ""
+    },
+    {
+      "key": "noteCompletion",
+      "value": ""
+    },
+    {
+      "key": "getAllNotesMessage",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "getNoteByIdMessage",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "updatedNoteMessage",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "updatedNoteDate",
+      "value": ""
+    },
+    {
+      "key": "noteStatusUpdateMessage",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "deletedNoteMessage",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userProfileMessage",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "updatedProfileMessage",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "forgotPasswordMessage",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "changedPasswordMessage",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "logoutMessage",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "deletedAccountMessage",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
